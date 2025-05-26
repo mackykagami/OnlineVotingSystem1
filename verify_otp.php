@@ -43,16 +43,100 @@ if (isset($_POST['resend'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Verify OTP - Online Voting System</title>
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; }
-        .container { background: white; padding: 40px 32px 32px 32px; border-radius: 18px; box-shadow: 0 8px 32px rgba(102, 126, 234, 0.15); width: 100%; max-width: 400px; position: relative; text-align: center; }
-        .container::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 5px; background: linear-gradient(90deg, #667eea, #764ba2); border-radius: 18px 18px 0 0; }
-        .title { color: #333; font-size: 1.5em; font-weight: 700; margin-bottom: 18px; }
-        .alert-error { background-color: #fee; border: 1px solid #fbb; color: #c33; padding: 12px 16px; border-radius: 7px; margin-bottom: 18px; font-size: 15px; }
-        .alert-success { background-color: #efe; border: 1px solid #bfb; color: #363; padding: 12px 16px; border-radius: 7px; margin-bottom: 18px; font-size: 15px; }
-        .otp-input { width: 100%; padding: 12px 14px; border: 2px solid #e1e5e9; border-radius: 7px; font-size: 16px; margin-bottom: 18px; }
-        .submit-btn, .resend-btn { width: 100%; padding: 13px; background: linear-gradient(135deg, #28a745 0%, #667eea 100%); color: white; border: none; border-radius: 7px; font-size: 16px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; margin-bottom: 10px; }
-        .resend-btn { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); margin-bottom: 0; }
-        .submit-btn:hover, .resend-btn:hover { opacity: 0.85; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #e6f3ff;
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .container {
+            background: #f5f9ff;
+            padding: 40px 32px 32px 32px;
+            border-radius: 18px;
+            box-shadow: 0 0 20px rgba(0, 123, 255, 0.08);
+            width: 100%;
+            max-width: 400px;
+            position: relative;
+            text-align: center;
+        }
+        .container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: #007bff;
+            border-radius: 18px 18px 0 0;
+        }
+        .title {
+            color: #007bff;
+            font-size: 1.5em;
+            font-weight: 700;
+            margin-bottom: 18px;
+        }
+        .alert-error {
+            background-color: #fff2f2;
+            border: 1px solid #ffcdd2;
+            color: #d32f2f;
+            padding: 12px 16px;
+            border-radius: 7px;
+            margin-bottom: 18px;
+            font-size: 15px;
+        }
+        .alert-success {
+            background-color: #f0f9f0;
+            border: 1px solid #c8e6c9;
+            color: #2e7d32;
+            padding: 12px 16px;
+            border-radius: 7px;
+            margin-bottom: 18px;
+            font-size: 15px;
+        }
+        .otp-input {
+            width: 100%;
+            padding: 12px 14px;
+            border: 2px solid #e1e5e9;
+            border-radius: 7px;
+            font-size: 16px;
+            margin-bottom: 18px;
+            box-sizing: border-box;
+        }
+        .otp-input:focus {
+            outline: none;
+            border-color: #007bff;
+        }
+        .submit-btn, .resend-btn {
+            width: 100%;
+            padding: 13px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 7px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 10px;
+        }
+        .resend-btn {
+            background: #0056b3;
+            margin-bottom: 0;
+        }
+        .submit-btn:hover, .resend-btn:hover {
+            opacity: 0.85;
+        }
+        .alert-success a {
+            color: #007bff;
+            text-decoration: none;
+        }
+        .alert-success a:hover {
+            text-decoration: underline;
+        }
     </style>
 </head>
 <body>

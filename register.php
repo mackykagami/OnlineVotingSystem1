@@ -50,38 +50,29 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: #e6f3ff;
+            margin: 0;
+            padding: 15px;
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 20px;
         }
-        .login-container {
-            background: white;
-            padding: 40px 32px 32px 32px;
+        .register-container {
+            background: #f5f9ff;
+            padding: 30px;
             border-radius: 18px;
-            box-shadow: 0 8px 32px rgba(102, 126, 234, 0.15);
+            box-shadow: 0 0 20px rgba(0, 123, 255, 0.08);
             width: 100%;
-            max-width: 400px;
+            max-width: 500px;
             position: relative;
-        }
-        .login-container::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 5px;
-            background: linear-gradient(90deg, #667eea, #764ba2);
-            border-radius: 18px 18px 0 0;
         }
         .logo {
             text-align: center;
             margin-bottom: 28px;
         }
         .logo h1 {
-            color: #333;
+            color: #007bff;
             font-size: 2em;
             margin-bottom: 8px;
             font-weight: 700;
@@ -95,27 +86,29 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
         .form-group label {
             display: block;
-            color: #333;
+            color: #007bff;
             font-weight: 500;
             margin-bottom: 7px;
         }
         .form-group input {
             width: 100%;
             padding: 12px 14px;
-            border: 2px solid #e1e5e9;
+            border: 2px solid #cce4ff;
             border-radius: 7px;
             font-size: 16px;
             transition: all 0.3s ease;
+            background: #f5f9ff;
         }
         .form-group input:focus {
             outline: none;
-            border-color: #667eea;
-            box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.13);
+            border-color: #007bff;
+            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+            background: #f5f9ff;
         }
         .login-btn {
             width: 100%;
             padding: 13px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: #007bff;
             color: white;
             border: none;
             border-radius: 7px;
@@ -127,7 +120,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
         .login-btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 6px 18px rgba(102, 126, 234, 0.18);
+            box-shadow: 0 6px 18px rgba(0, 123, 255, 0.18);
         }
         .login-btn:active {
             transform: translateY(0);
@@ -138,7 +131,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             margin-top: 10px;
         }
         .register-link a {
-            color: #667eea;
+            color: #007bff;
             text-decoration: none;
             font-weight: 500;
         }
@@ -152,17 +145,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             font-size: 15px;
         }
         .alert-error {
-            background-color: #fee;
-            border: 1px solid #fbb;
-            color: #c33;
+            background-color: #f5f9ff;
+            border: 1px solid #cce4ff;
+            color: #007bff;
         }
         .alert-success {
-            background-color: #efe;
-            border: 1px solid #bfb;
-            color: #363;
+            background-color: #e6f3ff;
+            border: 1px solid #cce4ff;
+            color: #007bff;
         }
         @media (max-width: 480px) {
-            .login-container {
+            .register-container {
                 padding: 28px 10px;
                 margin: 10px;
             }
@@ -173,7 +166,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     </style>
 </head>
 <body>
-    <div class="login-container">
+    <div class="register-container">
         <div class="logo">
             <h1>🗳️ VoteSecure</h1>
             <p>Secure Online Voting System</p>

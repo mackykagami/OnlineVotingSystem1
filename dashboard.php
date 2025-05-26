@@ -26,36 +26,247 @@ $elections = $db->query('SELECT e.*, (SELECT COUNT(*) FROM candidates c WHERE c.
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User Dashboard - Online Voting System</title>
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; }
-        .dashboard-container { background: white; padding: 40px 32px 32px 32px; border-radius: 18px; box-shadow: 0 8px 32px rgba(102, 126, 234, 0.15); width: 100%; max-width: 800px; position: relative; }
-        .dashboard-container::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 5px; background: linear-gradient(90deg, #667eea, #764ba2); border-radius: 18px 18px 0 0; }
-        .logo { text-align: center; margin-bottom: 28px; }
-        .logo h1 { color: #333; font-size: 2em; margin-bottom: 8px; font-weight: 700; }
-        .logo p { color: #666; font-size: 0.95em; }
-        .welcome { text-align: center; margin-bottom: 18px; font-size: 1.1em; color: #333; }
-        .how-to-vote { background: #f7f8fa; border-left: 5px solid #28a745; padding: 14px 18px; border-radius: 8px; color: #333; margin-bottom: 22px; font-size: 1.08em; }
-        .summary { display: flex; justify-content: space-between; margin-bottom: 24px; gap: 10px; flex-wrap: wrap; }
-        .summary-card { background: #f7f8fa; border-radius: 8px; padding: 18px 22px; flex: 1 1 22%; text-align: center; box-shadow: 0 2px 8px rgba(102, 126, 234, 0.07); min-width: 120px; }
-        .summary-title { color: #667eea; font-size: 1.1em; font-weight: 600; margin-bottom: 6px; }
-        .summary-value { font-size: 1.5em; color: #333; font-weight: 700; }
-        .elections-list { margin-bottom: 18px; }
-        .election-card { background: #f7f8fa; border-radius: 8px; padding: 16px; margin-bottom: 12px; box-shadow: 0 2px 8px rgba(102, 126, 234, 0.07); }
-        .election-title { font-weight: 600; color: #667eea; margin-bottom: 4px; }
-        .election-desc { color: #444; margin-bottom: 6px; }
-        .election-dates { color: #888; font-size: 0.95em; }
-        .election-status { font-size: 0.95em; font-weight: 600; color: #fff; background: #667eea; border-radius: 5px; padding: 2px 10px; display: inline-block; margin-left: 8px; }
-        .candidate-count { font-size: 0.95em; color: #333; margin-top: 4px; }
-        .election-actions { margin-top: 10px; }
-        .election-actions a, .election-actions form { display: inline-block; margin-right: 8px; }
-        .action-btn { padding: 6px 14px; border: none; border-radius: 5px; font-size: 0.98em; font-weight: 500; cursor: pointer; background: #667eea; color: #fff; transition: background 0.2s; text-decoration: none; }
-        .action-btn.vote { background: #28a745; }
-        .action-btn.candidates { background: #764ba2; }
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background: #e6f3ff;
+            margin: 0;
+            padding: 15px;
+            min-height: 100vh;
+        }
+        .dashboard-container { 
+            background: #f5f9ff; 
+            padding: 30px;
+            width: 95%;
+            max-width: 1400px;
+            margin: 0 auto;
+            border-radius: 18px; 
+            box-shadow: 0 0 20px rgba(0, 123, 255, 0.08);
+            position: relative; 
+        }
+        .dashboard-container::before { 
+            content: ''; 
+            position: absolute; 
+            top: 0; 
+            left: 0; 
+            right: 0; 
+            height: 5px; 
+            background: #007bff;
+            border-radius: 18px 18px 0 0; 
+        }
+        .logo { 
+            text-align: center; 
+            margin-bottom: 20px;
+        }
+        .logo-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 6px;
+        }
+        .logo-image {
+            width: 45px;
+            height: 45px;
+        }
+        .logo h1 { 
+            color: #007bff; 
+            font-size: 2.2em; 
+            margin: 0;
+            font-weight: 700;
+        }
+        .logo p { 
+            color: #666; 
+            font-size: 1em;
+            margin-top: 4px;
+        }
+        .welcome { 
+            text-align: center; 
+            margin-bottom: 20px; 
+            font-size: 1.1em; 
+            color: #007bff; 
+        }
+        .how-to-vote { 
+            background: #f0f7ff; 
+            border-left: 5px solid #007bff; 
+            padding: 16px 20px; 
+            border-radius: 12px; 
+            color: #007bff; 
+            margin-bottom: 25px; 
+            font-size: 1em;
+            line-height: 1.5;
+        }
+        .summary { 
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 25px;
+        }
+        .summary-card { 
+            background: #f5f9ff; 
+            border-radius: 12px; 
+            padding: 20px; 
+            text-align: center; 
+            box-shadow: 0 2px 8px rgba(0, 123, 255, 0.1);
+        }
+        .summary-title { 
+            color: #007bff; 
+            font-size: 1.1em; 
+            font-weight: 600; 
+            margin-bottom: 8px; 
+        }
+        .summary-value { 
+            font-size: 1.8em; 
+            color: #333; 
+            font-weight: 700; 
+        }
+        .elections-list { 
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 16px;
+            margin: 20px 0;
+        }
+        .election-card { 
+            background: #f5f9ff; 
+            border-radius: 12px; 
+            padding: 16px; 
+            box-shadow: 0 2px 8px rgba(0, 123, 255, 0.1);
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+        .election-title { 
+            font-weight: 600; 
+            color: #007bff; 
+            margin-bottom: 6px;
+            font-size: 1.1em;
+        }
+        .election-desc { 
+            color: #444; 
+            margin-bottom: 8px; 
+            flex-grow: 1; 
+            font-size: 0.95em;
+        }
+        .election-dates { 
+            color: #666; 
+            font-size: 0.9em; 
+            margin-bottom: 8px; 
+        }
+        .election-status { 
+            font-size: 0.95em; 
+            font-weight: 600; 
+            color: #fff; 
+            background: #007bff; 
+            border-radius: 5px; 
+            padding: 4px 12px; 
+            display: inline-block; 
+            margin-left: 8px; 
+        }
+        .candidate-count { font-size: 0.95em; color: #333; margin: 8px 0; }
+        .election-actions { 
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+        }
+        .action-btn { 
+            padding: 8px 12px; 
+            border: none; 
+            border-radius: 6px; 
+            font-size: 0.95em; 
+            font-weight: 500; 
+            cursor: pointer; 
+            background: #007bff; 
+            color: #fff; 
+            transition: all 0.2s; 
+            text-decoration: none;
+            flex: 1;
+            text-align: center;
+            min-width: 90px;
+        }
+        .action-btn.vote { 
+            background: #28a745;
+        }
+        .action-btn.candidates { 
+            background: #fff; 
+            color: #007bff; 
+            border: 2px solid #007bff;
+        }
         .action-btn.results { background: #6c757d; }
-        .action-btn.disabled, .action-btn[disabled] { background: #ccc; cursor: not-allowed; }
-        .action-btn:hover { opacity: 0.85; }
-        .logout-btn { width: 100%; padding: 12px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 7px; font-size: 16px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; margin-top: 18px; }
-        .logout-btn:hover { background: linear-gradient(135deg, #764ba2 0%, #667eea 100%); }
-        @media (max-width: 900px) { .dashboard-container { padding: 28px 8px; margin: 10px; } .logo h1 { font-size: 1.4em; } .summary { flex-direction: column; gap: 12px; } }
+        .action-btn.disabled, 
+        .action-btn[disabled] { 
+            background: #ccc; 
+            cursor: not-allowed; 
+            opacity: 0.7;
+        }
+        .action-btn:hover:not(.disabled):not([disabled]) { 
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+        .logout-btn { 
+            width: 100%; 
+            padding: 12px; 
+            background: #007bff;
+            color: white; 
+            border: none; 
+            border-radius: 8px; 
+            font-size: 1.1em; 
+            font-weight: 600; 
+            cursor: pointer; 
+            transition: all 0.3s ease; 
+            margin-top: 20px; 
+        }
+        .logout-btn:hover { 
+            background: #0056b3;
+            transform: translateY(-1px);
+        }
+        .alert-error {
+            background: #f0f7ff;
+            border: 2px solid #007bff;
+            color: #007bff;
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            font-size: 1em;
+            line-height: 1.4;
+        }
+        
+        @media (max-width: 768px) { 
+            .dashboard-container { 
+                padding: 20px;
+                margin: 0;
+                width: auto;
+            }
+            .elections-list {
+                grid-template-columns: 1fr;
+            }
+            .summary {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .logo h1 {
+                font-size: 1.8em;
+            }
+            .how-to-vote {
+                padding: 14px 18px;
+                font-size: 0.95em;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .summary {
+                grid-template-columns: 1fr;
+            }
+            .election-actions {
+                flex-direction: column;
+            }
+            .action-btn {
+                width: 100%;
+            }
+            .logo h1 {
+                font-size: 1.6em;
+            }
+            .dashboard-container {
+                padding: 15px;
+            }
+        }
     </style>
 </head>
 <body>

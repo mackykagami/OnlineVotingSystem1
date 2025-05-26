@@ -13,10 +13,28 @@ $election = $stmt->fetch();
 if (!$election) {
     Utils::redirect('dashboard.php');
 }
-// Fetch candidates
-$candidates = $db->prepare('SELECT * FROM candidates WHERE election_id = ? ORDER BY position, name');
-$candidates->execute([$election_id]);
-$candidates = $candidates->fetchAll();
+
+// Define positions
+$positions = [
+    1 => 'President',
+    2 => 'Vice President',
+    3 => 'Secretary',
+    4 => '1st Year Representative',
+    5 => '2nd Year Representative',
+    6 => '3rd Year Representative',
+    7 => '4th Year Representative'
+];
+
+// Get all candidates grouped by position
+$stmt = $db->prepare('SELECT * FROM candidates WHERE election_id = ? ORDER BY position, name');
+$stmt->execute([$election_id]);
+$candidates = $stmt->fetchAll();
+
+// Group candidates by position
+$candidates_by_position = [];
+foreach ($candidates as $candidate) {
+    $candidates_by_position[$candidate['position']][] = $candidate;
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -25,37 +43,102 @@ $candidates = $candidates->fetchAll();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>View Candidates - Online Voting System</title>
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; }
-        .container { background: white; padding: 40px 32px 32px 32px; border-radius: 18px; box-shadow: 0 8px 32px rgba(102, 126, 234, 0.15); width: 100%; max-width: 600px; position: relative; }
-        .container::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 5px; background: linear-gradient(90deg, #667eea, #764ba2); border-radius: 18px 18px 0 0; }
-        .title { text-align: center; color: #333; font-size: 1.5em; font-weight: 700; margin-bottom: 18px; }
-        .candidates-list { margin-bottom: 18px; }
-        .candidate-card { background: #f7f8fa; border-radius: 8px; padding: 16px; margin-bottom: 12px; box-shadow: 0 2px 8px rgba(102, 126, 234, 0.07); }
-        .candidate-name { font-weight: 600; color: #667eea; margin-bottom: 4px; }
-        .candidate-party { color: #444; margin-bottom: 6px; }
-        .candidate-bio { color: #555; font-size: 0.98em; }
-        .back-btn { display: block; width: 100%; margin-top: 18px; padding: 13px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 7px; font-size: 16px; font-weight: 600; cursor: pointer; text-align: center; text-decoration: none; }
-        .back-btn:hover { background: linear-gradient(135deg, #764ba2 0%, #667eea 100%); }
-        @media (max-width: 700px) { .container { padding: 28px 8px; margin: 10px; } .title { font-size: 1.2em; } }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #e6f3ff;
+            margin: 0;
+            padding: 15px;
+            min-height: 100vh;
+        }
+        .candidates-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: #f5f9ff;
+            padding: 30px;
+            border-radius: 18px;
+            box-shadow: 0 0 20px rgba(0, 123, 255, 0.08);
+            position: relative;
+        }
+        .position-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #f5f9ff;
+            border-radius: 10px;
+            border-left: 5px solid #007bff;
+        }
+        .position-title {
+            color: #007bff;
+            font-size: 1.5em;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+        .candidates-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+        .candidate-card {
+            background: #f5f9ff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0, 123, 255, 0.05);
+        }
+        .candidate-name {
+            font-size: 1.2em;
+            font-weight: 600;
+            color: #007bff;
+            margin-bottom: 8px;
+        }
+        .candidate-party {
+            color: #666;
+            font-size: 0.9em;
+            margin-bottom: 12px;
+        }
+        .candidate-bio {
+            color: #444;
+            font-size: 0.95em;
+            line-height: 1.5;
+        }
+        .back-btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        .back-btn:hover {
+            background: #0056b3;
+        }
+        @media (max-width: 768px) {
+            .candidates-grid {
+                grid-template-columns: 1fr;
+            }
+        }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="title">Candidates for: <?php echo htmlspecialchars($election['title']); ?></div>
-        <div class="candidates-list">
-            <?php if (count($candidates) === 0): ?>
-                <div style="color:#888;">No candidates found.</div>
-            <?php else: ?>
-                <?php foreach ($candidates as $candidate): ?>
-                    <div class="candidate-card">
-                        <div class="candidate-name"><?php echo htmlspecialchars($candidate['name']); ?></div>
-                        <div class="candidate-party">Party: <?php echo htmlspecialchars($candidate['party']); ?></div>
-                        <div class="candidate-bio"><?php echo nl2br(htmlspecialchars($candidate['biography'])); ?></div>
+    <div class="candidates-container">
+        <a href="dashboard.php" class="back-btn">← Back to Dashboard</a>
+        <h1 style="text-align: center; color: #007bff; margin-bottom: 30px;">🗳️ Candidates List</h1>
+        
+        <?php foreach ($positions as $pos_id => $pos_name): ?>
+            <?php if (isset($candidates_by_position[$pos_id])): ?>
+                <div class="position-section">
+                    <div class="position-title"><?php echo htmlspecialchars($pos_name); ?></div>
+                    <div class="candidates-grid">
+                        <?php foreach ($candidates_by_position[$pos_id] as $candidate): ?>
+                            <div class="candidate-card">
+                                <div class="candidate-name"><?php echo htmlspecialchars($candidate['name']); ?></div>
+                                <div class="candidate-party"><?php echo htmlspecialchars($candidate['party']); ?></div>
+                                <div class="candidate-bio"><?php echo nl2br(htmlspecialchars($candidate['biography'])); ?></div>
+                            </div>
+                        <?php endforeach; ?>
                     </div>
-                <?php endforeach; ?>
+                </div>
             <?php endif; ?>
-        </div>
-        <a href="dashboard.php" class="back-btn">Back to Dashboard</a>
+        <?php endforeach; ?>
     </div>
 </body>
 </html> 
