@@ -63,7 +63,7 @@ foreach ($results as $result) {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: #e6f3ff;
             margin: 0;
-            padding: 15px;
+            padding: 0;
             min-height: 100vh;
         }
         .results-container {
@@ -167,42 +167,46 @@ foreach ($results as $result) {
     </style>
 </head>
 <body>
-    <div class="results-container">
-        <a href="dashboard.php" class="back-btn">← Back to Dashboard</a>
-        <h1 style="text-align: center; color: #007bff; margin-bottom: 30px;">🗳️ Election Results</h1>
-        <h2 style="text-align: center; color: #666; margin-bottom: 30px;"><?php echo htmlspecialchars($election['title']); ?></h2>
-        
-        <?php foreach ($positions as $pos_id => $pos_name): ?>
-            <?php if (isset($results_by_position[$pos_id])): ?>
-                <div class="position-section">
-                    <div class="position-title"><?php echo htmlspecialchars($pos_name); ?></div>
-                    <?php 
-                    $position_results = $results_by_position[$pos_id];
-                    $max_votes = max(array_column($position_results, 'vote_count'));
-                    foreach ($position_results as $result): 
-                        $percentage = $result['total_votes'] > 0 ? 
-                            round(($result['vote_count'] / $result['total_votes']) * 100, 1) : 0;
-                    ?>
-                        <div class="result-card">
-                            <div class="candidate-name">
-                                <?php echo htmlspecialchars($result['name']); ?>
-                                <?php if ($result['vote_count'] == $max_votes && $result['vote_count'] > 0): ?>
-                                    <span class="winner">Winner</span>
-                                <?php endif; ?>
+    <?php include 'sidebar.php'; ?>
+    
+    <div class="content-wrapper">
+        <div class="results-container">
+            <a href="dashboard.php" class="back-btn">← Back to Dashboard</a>
+            <h1 style="text-align: center; color: #007bff; margin-bottom: 30px;">🗳️ Election Results</h1>
+            <h2 style="text-align: center; color: #666; margin-bottom: 30px;"><?php echo htmlspecialchars($election['title']); ?></h2>
+            
+            <?php foreach ($positions as $pos_id => $pos_name): ?>
+                <?php if (isset($results_by_position[$pos_id])): ?>
+                    <div class="position-section">
+                        <div class="position-title"><?php echo htmlspecialchars($pos_name); ?></div>
+                        <?php 
+                        $position_results = $results_by_position[$pos_id];
+                        $max_votes = max(array_column($position_results, 'vote_count'));
+                        foreach ($position_results as $result): 
+                            $percentage = $result['total_votes'] > 0 ? 
+                                round(($result['vote_count'] / $result['total_votes']) * 100, 1) : 0;
+                        ?>
+                            <div class="result-card">
+                                <div class="candidate-name">
+                                    <?php echo htmlspecialchars($result['name']); ?>
+                                    <?php if ($result['vote_count'] == $max_votes && $result['vote_count'] > 0): ?>
+                                        <span class="winner">Winner</span>
+                                    <?php endif; ?>
+                                </div>
+                                <div class="candidate-party"><?php echo htmlspecialchars($result['party']); ?></div>
+                                <div class="vote-info">
+                                    <span class="vote-count"><?php echo $result['vote_count']; ?> votes</span>
+                                    <span class="vote-percentage"><?php echo $percentage; ?>%</span>
+                                </div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: <?php echo $percentage; ?>%"></div>
+                                </div>
                             </div>
-                            <div class="candidate-party"><?php echo htmlspecialchars($result['party']); ?></div>
-                            <div class="vote-info">
-                                <span class="vote-count"><?php echo $result['vote_count']; ?> votes</span>
-                                <span class="vote-percentage"><?php echo $percentage; ?>%</span>
-                            </div>
-                            <div class="progress-bar">
-                                <div class="progress-fill" style="width: <?php echo $percentage; ?>%"></div>
-                            </div>
-                        </div>
-                    <?php endforeach; ?>
-                </div>
-            <?php endif; ?>
-        <?php endforeach; ?>
+                        <?php endforeach; ?>
+                    </div>
+                <?php endif; ?>
+            <?php endforeach; ?>
+        </div>
     </div>
 </body>
 </html> 

@@ -30,15 +30,12 @@ $elections = $db->query('SELECT e.*, (SELECT COUNT(*) FROM candidates c WHERE c.
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
             background: #e6f3ff;
             margin: 0;
-            padding: 15px;
+            padding: 0;
             min-height: 100vh;
         }
         .dashboard-container { 
             background: #f5f9ff; 
             padding: 30px;
-            width: 95%;
-            max-width: 1400px;
-            margin: 0 auto;
             border-radius: 18px; 
             box-shadow: 0 0 20px rgba(0, 123, 255, 0.08);
             position: relative; 
@@ -52,38 +49,6 @@ $elections = $db->query('SELECT e.*, (SELECT COUNT(*) FROM candidates c WHERE c.
             height: 5px; 
             background: #007bff;
             border-radius: 18px 18px 0 0; 
-        }
-        .logo { 
-            text-align: center; 
-            margin-bottom: 20px;
-        }
-        .logo-container {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 12px;
-            margin-bottom: 6px;
-        }
-        .logo-image {
-            width: 45px;
-            height: 45px;
-        }
-        .logo h1 { 
-            color: #007bff; 
-            font-size: 2.2em; 
-            margin: 0;
-            font-weight: 700;
-        }
-        .logo p { 
-            color: #666; 
-            font-size: 1em;
-            margin-top: 4px;
-        }
-        .welcome { 
-            text-align: center; 
-            margin-bottom: 20px; 
-            font-size: 1.1em; 
-            color: #007bff; 
         }
         .how-to-vote { 
             background: #f0f7ff; 
@@ -201,23 +166,6 @@ $elections = $db->query('SELECT e.*, (SELECT COUNT(*) FROM candidates c WHERE c.
             opacity: 0.9;
             transform: translateY(-1px);
         }
-        .logout-btn { 
-            width: 100%; 
-            padding: 12px; 
-            background: #007bff;
-            color: white; 
-            border: none; 
-            border-radius: 8px; 
-            font-size: 1.1em; 
-            font-weight: 600; 
-            cursor: pointer; 
-            transition: all 0.3s ease; 
-            margin-top: 20px; 
-        }
-        .logout-btn:hover { 
-            background: #0056b3;
-            transform: translateY(-1px);
-        }
         .alert-error {
             background: #f0f7ff;
             border: 2px solid #007bff;
@@ -241,9 +189,6 @@ $elections = $db->query('SELECT e.*, (SELECT COUNT(*) FROM candidates c WHERE c.
             .summary {
                 grid-template-columns: repeat(2, 1fr);
             }
-            .logo h1 {
-                font-size: 1.8em;
-            }
             .how-to-vote {
                 padding: 14px 18px;
                 font-size: 0.95em;
@@ -260,9 +205,6 @@ $elections = $db->query('SELECT e.*, (SELECT COUNT(*) FROM candidates c WHERE c.
             .action-btn {
                 width: 100%;
             }
-            .logo h1 {
-                font-size: 1.6em;
-            }
             .dashboard-container {
                 padding: 15px;
             }
@@ -270,89 +212,85 @@ $elections = $db->query('SELECT e.*, (SELECT COUNT(*) FROM candidates c WHERE c.
     </style>
 </head>
 <body>
-    <div class="dashboard-container">
-        <div class="logo">
-            <h1>🗳️ VoteSecure</h1>
-            <p>User Dashboard</p>
-        </div>
-        <div class="welcome">Welcome, <?php echo htmlspecialchars($user['username']); ?>!</div>
-        <div class="how-to-vote">
-            <strong>How to Vote:</strong> Find an <span style="color:#28a745;font-weight:600;">active</span> election below and click the <span style="color:#28a745;font-weight:600;">Vote</span> button. You can only vote once per election. To see candidates, click <span style="color:#764ba2;font-weight:600;">View Candidates</span>. For completed elections, click <span style="color:#6c757d;font-weight:600;">View Results</span>.
-        </div>
-        <?php if (!empty($_SESSION['error_message'])): ?>
-            <div class="alert-error" style="background:#fee;border:1px solid #fbb;color:#c33;padding:12px 16px;border-radius:7px;margin-bottom:18px;font-size:15px;">
-                <?php echo $_SESSION['error_message']; unset($_SESSION['error_message']); ?>
+    <?php include 'sidebar.php'; ?>
+    
+    <div class="content-wrapper">
+        <div class="dashboard-container">
+            <div class="how-to-vote">
+                <strong>How to Vote:</strong> Find an <span style="color:#28a745;font-weight:600;">active</span> election below and click the <span style="color:#28a745;font-weight:600;">Vote</span> button. You can only vote once per election. To see candidates, click <span style="color:#764ba2;font-weight:600;">View Candidates</span>. For completed elections, click <span style="color:#6c757d;font-weight:600;">View Results</span>.
             </div>
-        <?php endif; ?>
-        <div class="summary">
-            <div class="summary-card">
-                <div class="summary-title">Total Elections</div>
-                <div class="summary-value"><?php echo $total_elections; ?></div>
-            </div>
-            <div class="summary-card">
-                <div class="summary-title">Votes Cast</div>
-                <div class="summary-value"><?php echo $total_votes; ?></div>
-            </div>
-            <div class="summary-card">
-                <div class="summary-title">Upcoming Elections</div>
-                <div class="summary-value"><?php echo $upcoming_elections; ?></div>
-            </div>
-        </div>
-        <div class="elections-list">
-            <h3 style="color:#333; margin-bottom:10px;">All Elections</h3>
-            <?php if (count($elections) === 0): ?>
-                <div style="color:#888;">No elections found.</div>
-            <?php else: ?>
-                <?php
-                $has_active = false;
-                foreach ($elections as $election) {
-                    if ($election['status'] === 'active') {
-                        $has_active = true;
-                        break;
-                    }
-                }
-                ?>
-                <?php if (!$has_active): ?>
-                    <div style="color:#888; margin-bottom:18px;">No active elections available for voting at this time.</div>
-                <?php endif; ?>
-                <?php foreach ($elections as $election): ?>
-                    <div class="election-card">
-                        <div class="election-title"><?php echo htmlspecialchars($election['title']); ?>
-                            <span class="election-status" style="background:<?php
-                                if ($election['status'] === 'active') echo '#28a745';
-                                elseif ($election['status'] === 'completed') echo '#6c757d';
-                                else echo '#667eea';
-                            ?>;">
-                                <?php echo ucfirst($election['status']); ?>
-                            </span>
-                        </div>
-                        <div class="election-desc"><?php echo htmlspecialchars($election['description']); ?></div>
-                        <div class="election-dates">From <?php echo date('M d, Y H:i', strtotime($election['start_date'])); ?> to <?php echo date('M d, Y H:i', strtotime($election['end_date'])); ?></div>
-                        <div class="candidate-count">Candidates: <?php echo $election['candidate_count']; ?></div>
-                        <div class="election-actions">
-                            <a href="view_candidates.php?election_id=<?php echo $election['id']; ?>" class="action-btn candidates">View Candidates</a>
-                            <?php
-                            // Check if user has already voted in this election
-                            $vote_stmt = $db->prepare('SELECT id FROM votes WHERE user_id = ? AND election_id = ?');
-                            $vote_stmt->execute([$user_id, $election['id']]);
-                            $has_voted = $vote_stmt->rowCount() > 0;
-                            ?>
-                            <?php if ($election['status'] === 'active' && !$has_voted): ?>
-                                <a href="vote.php?election_id=<?php echo $election['id']; ?>" class="action-btn vote">Vote</a>
-                            <?php elseif ($election['status'] === 'active' && $has_voted): ?>
-                                <button class="action-btn disabled" disabled>Voted</button>
-                            <?php endif; ?>
-                            <?php if ($election['status'] === 'completed'): ?>
-                                <a href="view_results.php?election_id=<?php echo $election['id']; ?>" class="action-btn results">View Results</a>
-                            <?php endif; ?>
-                        </div>
-                    </div>
-                <?php endforeach; ?>
+            <?php if (!empty($_SESSION['error_message'])): ?>
+                <div class="alert-error">
+                    <?php echo $_SESSION['error_message']; unset($_SESSION['error_message']); ?>
+                </div>
             <?php endif; ?>
+            <div class="summary">
+                <div class="summary-card">
+                    <div class="summary-title">Total Elections</div>
+                    <div class="summary-value"><?php echo $total_elections; ?></div>
+                </div>
+                <div class="summary-card">
+                    <div class="summary-title">Votes Cast</div>
+                    <div class="summary-value"><?php echo $total_votes; ?></div>
+                </div>
+                <div class="summary-card">
+                    <div class="summary-title">Upcoming Elections</div>
+                    <div class="summary-value"><?php echo $upcoming_elections; ?></div>
+                </div>
+            </div>
+            <div class="elections-list">
+                <h3 style="color:#333; margin-bottom:10px;">All Elections</h3>
+                <?php if (count($elections) === 0): ?>
+                    <div style="color:#888;">No elections found.</div>
+                <?php else: ?>
+                    <?php
+                    $has_active = false;
+                    foreach ($elections as $election) {
+                        if ($election['status'] === 'active') {
+                            $has_active = true;
+                            break;
+                        }
+                    }
+                    ?>
+                    <?php if (!$has_active): ?>
+                        <div style="color:#888; margin-bottom:18px;">No active elections available for voting at this time.</div>
+                    <?php endif; ?>
+                    <?php foreach ($elections as $election): ?>
+                        <div class="election-card">
+                            <div class="election-title"><?php echo htmlspecialchars($election['title']); ?>
+                                <span class="election-status" style="background:<?php
+                                    if ($election['status'] === 'active') echo '#28a745';
+                                    elseif ($election['status'] === 'completed') echo '#6c757d';
+                                    else echo '#667eea';
+                                ?>;">
+                                    <?php echo ucfirst($election['status']); ?>
+                                </span>
+                            </div>
+                            <div class="election-desc"><?php echo htmlspecialchars($election['description']); ?></div>
+                            <div class="election-dates">From <?php echo date('M d, Y H:i', strtotime($election['start_date'])); ?> to <?php echo date('M d, Y H:i', strtotime($election['end_date'])); ?></div>
+                            <div class="candidate-count">Candidates: <?php echo $election['candidate_count']; ?></div>
+                            <div class="election-actions">
+                                <a href="view_candidates.php?election_id=<?php echo $election['id']; ?>" class="action-btn candidates">View Candidates</a>
+                                <?php
+                                // Check if user has already voted in this election
+                                $vote_stmt = $db->prepare('SELECT id FROM votes WHERE user_id = ? AND election_id = ?');
+                                $vote_stmt->execute([$user_id, $election['id']]);
+                                $has_voted = $vote_stmt->rowCount() > 0;
+                                ?>
+                                <?php if ($election['status'] === 'active' && !$has_voted): ?>
+                                    <a href="vote.php?election_id=<?php echo $election['id']; ?>" class="action-btn vote">Vote</a>
+                                <?php elseif ($election['status'] === 'active' && $has_voted): ?>
+                                    <button class="action-btn disabled" disabled>Voted</button>
+                                <?php endif; ?>
+                                <?php if ($election['status'] === 'completed'): ?>
+                                    <a href="view_results.php?election_id=<?php echo $election['id']; ?>" class="action-btn results">View Results</a>
+                                <?php endif; ?>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
+                <?php endif; ?>
+            </div>
         </div>
-        <form method="post" action="logout.php">
-            <button type="submit" class="logout-btn">Logout</button>
-        </form>
     </div>
 </body>
 </html> 

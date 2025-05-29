@@ -107,7 +107,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: #e6f3ff;
             margin: 0;
-            padding: 15px;
+            padding: 0;
             min-height: 100vh;
         }
         .voting-container {
@@ -230,30 +230,34 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     </style>
 </head>
 <body>
-    <div class="voting-container">
-        <h1 class="page-title">🗳️ Cast Your Vote</h1>
-        <?php if (!empty($error_message)): ?>
-            <div class="error-message"><?php echo htmlspecialchars($error_message); ?></div>
-        <?php endif; ?>
-        <form method="POST">
-            <?php foreach ($positions as $pos_id => $pos_name): ?>
-                <?php if (isset($candidates_by_position[$pos_id])): ?>
-                    <div class="position-section">
-                        <div class="position-title"><?php echo htmlspecialchars($pos_name); ?></div>
-                        <?php foreach ($candidates_by_position[$pos_id] as $candidate): ?>
-                            <div class="candidate-card">
-                                <input type="radio" name="candidates[<?php echo $pos_id; ?>]" value="<?php echo $candidate['id']; ?>" class="radio-input" required>
-                                <div class="candidate-info">
-                                    <div class="candidate-name"><?php echo htmlspecialchars($candidate['name']); ?></div>
-                                    <div class="candidate-party"><?php echo htmlspecialchars($candidate['party']); ?></div>
+    <?php include 'sidebar.php'; ?>
+    
+    <div class="content-wrapper">
+        <div class="voting-container">
+            <h1 class="page-title">🗳️ Cast Your Vote</h1>
+            <?php if (!empty($error_message)): ?>
+                <div class="error-message"><?php echo htmlspecialchars($error_message); ?></div>
+            <?php endif; ?>
+            <form method="POST">
+                <?php foreach ($positions as $pos_id => $pos_name): ?>
+                    <?php if (isset($candidates_by_position[$pos_id])): ?>
+                        <div class="position-section">
+                            <div class="position-title"><?php echo htmlspecialchars($pos_name); ?></div>
+                            <?php foreach ($candidates_by_position[$pos_id] as $candidate): ?>
+                                <div class="candidate-card">
+                                    <input type="radio" name="candidates[<?php echo $pos_id; ?>]" value="<?php echo $candidate['id']; ?>" class="radio-input" required>
+                                    <div class="candidate-info">
+                                        <div class="candidate-name"><?php echo htmlspecialchars($candidate['name']); ?></div>
+                                        <div class="candidate-party"><?php echo htmlspecialchars($candidate['party']); ?></div>
+                                    </div>
                                 </div>
-                            </div>
-                        <?php endforeach; ?>
-                    </div>
-                <?php endif; ?>
-            <?php endforeach; ?>
-            <button type="submit" class="submit-btn">Submit Vote</button>
-        </form>
+                            <?php endforeach; ?>
+                        </div>
+                    <?php endif; ?>
+                <?php endforeach; ?>
+                <button type="submit" class="submit-btn">Submit Vote</button>
+            </form>
+        </div>
     </div>
 </body>
 </html> 

@@ -47,7 +47,7 @@ foreach ($candidates as $candidate) {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: #e6f3ff;
             margin: 0;
-            padding: 15px;
+            padding: 0;
             min-height: 100vh;
         }
         .candidates-container {
@@ -119,26 +119,30 @@ foreach ($candidates as $candidate) {
     </style>
 </head>
 <body>
-    <div class="candidates-container">
-        <a href="dashboard.php" class="back-btn">← Back to Dashboard</a>
-        <h1 style="text-align: center; color: #007bff; margin-bottom: 30px;">🗳️ Candidates List</h1>
-        
-        <?php foreach ($positions as $pos_id => $pos_name): ?>
-            <?php if (isset($candidates_by_position[$pos_id])): ?>
-                <div class="position-section">
-                    <div class="position-title"><?php echo htmlspecialchars($pos_name); ?></div>
-                    <div class="candidates-grid">
-                        <?php foreach ($candidates_by_position[$pos_id] as $candidate): ?>
-                            <div class="candidate-card">
-                                <div class="candidate-name"><?php echo htmlspecialchars($candidate['name']); ?></div>
-                                <div class="candidate-party"><?php echo htmlspecialchars($candidate['party']); ?></div>
-                                <div class="candidate-bio"><?php echo nl2br(htmlspecialchars($candidate['biography'])); ?></div>
-                            </div>
-                        <?php endforeach; ?>
+    <?php include 'sidebar.php'; ?>
+    
+    <div class="content-wrapper">
+        <div class="candidates-container">
+            <a href="dashboard.php" class="back-btn">← Back to Dashboard</a>
+            <h1 style="text-align: center; color: #007bff; margin-bottom: 30px;">🗳️ Candidates List</h1>
+            
+            <?php foreach ($positions as $pos_id => $pos_name): ?>
+                <?php if (isset($candidates_by_position[$pos_id])): ?>
+                    <div class="position-section">
+                        <div class="position-title"><?php echo htmlspecialchars($pos_name); ?></div>
+                        <div class="candidates-grid">
+                            <?php foreach ($candidates_by_position[$pos_id] as $candidate): ?>
+                                <div class="candidate-card">
+                                    <div class="candidate-name"><?php echo htmlspecialchars($candidate['name']); ?></div>
+                                    <div class="candidate-party"><?php echo htmlspecialchars($candidate['party']); ?></div>
+                                    <div class="candidate-bio"><?php echo nl2br(htmlspecialchars($candidate['biography'])); ?></div>
+                                </div>
+                            <?php endforeach; ?>
+                        </div>
                     </div>
-                </div>
-            <?php endif; ?>
-        <?php endforeach; ?>
+                <?php endif; ?>
+            <?php endforeach; ?>
+        </div>
     </div>
 </body>
 </html> 
